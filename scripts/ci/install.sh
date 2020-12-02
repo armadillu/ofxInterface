@@ -6,7 +6,7 @@ echo "Executing ci/linux/install.sh"
 export OF_ROOT=~/openFrameworks
 export OF_ADDONS=$OF_ROOT/addons
 
-ADDONS="local-projects/ofxAnimatable"
+ADDONS="armadillu/ofxAnimatable"
 
 cd $OF_ADDONS
 
