@@ -67,8 +67,47 @@ Node::Node()
 	historyPlot = NULL;
 #endif
 }
+	
+	Node::Node(const Node& mom) : ofNode(mom)
+{
+	name = mom.name;
+	plane = mom.plane;
+	size = mom.size;
+	bVisible = mom.bVisible;
+	bEnabled = mom.bEnabled;
+	bClipTouch = mom.bClipTouch;
+	bClipRender = mom.bClipRender;
+	bReceivingTouch = mom.bReceivingTouch;
+	setData(mom.data);
+	bSendDestroy = mom.bSendDestroy;
+	bNodeAllowOneTouch = mom.bNodeAllowOneTouch;
+	bNodeUpdateWhenHidden = mom.bNodeUpdateWhenHidden;
+	bNodeTouched = mom.bNodeTouched;
+	nodeCurrentTouchId = -1;
+#ifdef OLDSORT
+	sameDepthOffset = ofRandom(0, 1);
+#endif
+	
+#ifdef OFXUINODE_DEBUG
+	debugBorderColor = mom.debugBorderColor;
+#endif
+	
+#ifdef USE_OFX_HISTORY_PLOT
+	historyPlot = NULL;
+#endif
+	
+	// copy children
+	for (auto& c: mom.getChildren()) {
+		addChild(c->clone());
+	}
 
-
+}
+	
+Node* Node::clone()
+{
+	return new Node(*this);
+}
+	
 int Node::getNumNodesAlive(){
 	return numInterfaceNodes;
 }
@@ -437,15 +476,11 @@ void Node::touchEnter(int id, TouchEvent *event)
 
 ofVec3f Node::toLocal(const ofVec3f &screenPoint)
 {
-#if OF_VERSION_MINOR < 11
-	#ifdef GLM_SWIZZLE //this version of OF is using GLM for math ops
+	#if defined(GLM_SWIZZLE) || OF_VERSION_MINOR >= 10 //this version of OF is using GLM for math ops
 	return (ofVec3f)screenPoint * glm::inverse(ofNode::getGlobalTransformMatrix());
 	#else
 	return (ofVec3f)screenPoint*ofNode::getGlobalTransformMatrix().getInverse();
 	#endif
-#else
-	return (ofVec3f)screenPoint * glm::inverse(ofNode::getGlobalTransformMatrix());
-#endif
 }
     
 ofVec3f Node::toGlobal(const ofVec3f &localPoint)
@@ -594,6 +629,11 @@ Node* Node::removeChild(int index, bool bMaintainChildGlobalTransform)
 bool Node::haveChild(ofxInterface::Node *child)
 {
 	return find(childNodes.begin(), childNodes.end(), child) != childNodes.end();
+}
+
+void Node::sortChildren(const std::function<bool(const Node* a, const Node* b)>& compareFunction)
+{
+	std::sort(childNodes.begin(), childNodes.end(), compareFunction);
 }
 
 void Node::getSubTreeList(std::list<Node*>& list)

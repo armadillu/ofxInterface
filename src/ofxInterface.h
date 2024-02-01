@@ -10,6 +10,7 @@
 #define __ofxInterface_h__
 
 #include "Node.h"
+#include "AnimatableNode.h"
 #include "TouchEvent.h"
 #include "TouchManager.h"
 #include "VirtualTouch.h"
@@ -21,5 +22,6 @@
 #include "components/BitmapTextButton.h"
 #include "components/SolidColorPanel.h"
 #include "components/LambdaView.h"
+#include "components/ZoomableView.h"
 
 #endif

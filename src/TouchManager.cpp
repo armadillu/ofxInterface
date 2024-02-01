@@ -127,7 +127,7 @@ void TouchManager::drawFingerStatus(int x, int y){
 				case TouchEvent::TYPE_EXIT: type= "EXIT"; c = ofColor::red; break;
 				case TouchEvent::TYPE_ENTER: type= "ENTER"; c = ofColor::green; break;
 				case TouchEvent::TYPE_CLICK: type= "CLICK"; c = ofColor::magenta; break;
-				case TouchEvent::TYPE_SCROLLWHEEL: type= "CLICK"; c = ofColor::darkorange; break;
+				case TouchEvent::TYPE_SCROLLWHEEL: type= "CLICK"; c = ofColor::darkOrange; break;
 			}
 			ofSetColor(c);
 			ofDrawRectangle(xx, y, rectSizeW, rectSizeH);

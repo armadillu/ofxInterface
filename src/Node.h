@@ -31,6 +31,8 @@ class Node : public ofNode
 public:
 	virtual ~Node();
 	Node();
+	Node(const Node& mom);
+	virtual Node* clone();
 
     /******
      * Node Names:
@@ -56,6 +58,11 @@ public:
 
 	ofEvent<ofxInterface::Node> eventChildRemoved;
 	ofEvent<ofxInterface::Node> eventChildAdded;
+
+	/******
+	 * Sort children
+	 */
+	void sortChildren(const std::function<bool(const Node* a, const Node* b)>& compareFunction);
 
 	// functions to override
 	//

@@ -15,29 +15,29 @@ namespace ofxInterface
 TextureButton::TextureButton()
 {
 	texture = NULL;
-}
-
-void TextureButton::setup(ofTexture *tex, float x, float y)
-{
-	texture = tex;
-	setSize(tex->getWidth(), tex->getHeight());
-
-	setPosition(x, y, 0);
-
+	textureDown = NULL;
 	setPadding(0, 0, 0, 0);
-
 	bDrawBackground = false;
 	bDrawBorder = false;
-
-	bgColor = ofColor(255);;
-	tintColor = ofColor(255);
+	bgColor = ofColor(255,255,255,255);
+	tintColor = ofColor(255,255,255,255);
 	borderColor = ofColor(0);
+	touchDownFunc = []() {};
+	touchUpFunc = []() {};
+	ofAddListener(eventTouchDown, this, &TextureButton::onTouchDown);
+	ofAddListener(eventTouchUp, this, &TextureButton::onTouchUp);
 }
 
-void TextureButton::setTexture(ofTexture* tex)
+void TextureButton::setTextures(ofTexture* up, ofTexture* down)
 {
-	texture = tex;
-	setSize(tex->getWidth(), tex->getHeight());
+	if (!up)
+		return;
+
+	texture = up;
+	textureDown = down ? down : up;
+	float w = fmax(texture->getWidth(), textureDown->getWidth());
+	float h = fmax(texture->getHeight(), textureDown->getHeight());
+	setSize(w, h);
 }
 
 void TextureButton::setPadding(float top, float right, float bottom, float left)
@@ -62,8 +62,13 @@ void TextureButton::draw()
 	}
 
 	ofSetColor(tintColor);
-	if (texture) {
-		texture->draw(padLeft, padBottom, getWidth()-padLeft-padRight, getHeight()-padTop-padBottom);
+	if (texture && textureDown) {
+		if (Node::isTouched()) {
+			textureDown->draw(padLeft, padBottom, getWidth() - padLeft - padRight, getHeight() - padTop - padBottom);
+		}
+		else {
+			texture->draw(padLeft, padBottom, getWidth() - padLeft - padRight, getHeight() - padTop - padBottom);
+		}
 	}
 
 	if (bDrawBorder) {
@@ -71,6 +76,16 @@ void TextureButton::draw()
 		ofNoFill();
 		ofDrawRectangle(0, 0, getWidth(), getHeight());
 	}
+}
+
+void TextureButton::onTouchDown(TouchEvent& event)
+{
+	touchDownFunc();
+}
+
+void TextureButton::onTouchUp(TouchEvent& event)
+{
+	touchUpFunc();
 }
 
 }	// namespace

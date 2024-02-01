@@ -20,9 +20,7 @@ class TextureButton : public Node
 {
 public:
 	TextureButton();
-	void setup(ofTexture *tex, float x=0, float y=0);
-
-	void setTexture(ofTexture *tex);
+	void setTextures(ofTexture *up, ofTexture* down=NULL);
 
 	void setBorder(bool draw) { bDrawBorder = draw; }
 	void setBackground(bool draw) { bDrawBackground = draw; }
@@ -32,6 +30,13 @@ public:
 	void setBorderColor(const ofColor& c) { borderColor = c; }
 
 	void setPadding(float top, float right, float bottom, float left);
+
+	void onDown(const std::function<void(void)>& func) {
+		touchDownFunc = func;
+	}
+	void onUp(const std::function<void(void)>& func) {
+		touchUpFunc = func;
+	}
 
 	void update(float dt);
 	void draw();
@@ -50,6 +55,12 @@ private:
 	ofColor borderColor;
 
 	ofTexture* texture;
+	ofTexture* textureDown;
+
+	std::function<void(void)> touchDownFunc;
+	std::function<void(void)> touchUpFunc;
+	void onTouchDown(TouchEvent& event);
+	void onTouchUp(TouchEvent& event);
 };
 
 }	// namespace
