@@ -31,8 +31,14 @@ class Node : public ofNode
 public:
 	virtual ~Node();
 	Node();
+<<<<<<< Updated upstream
 	Node(const Node& mom);
 	virtual Node* clone();
+=======
+	Node(Node const &uRef){
+		std::clog << "copy constructor Node object!";
+	}
+>>>>>>> Stashed changes
 
     /******
      * Node Names:
